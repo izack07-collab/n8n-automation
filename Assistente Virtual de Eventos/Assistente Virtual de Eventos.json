@@ -597,23 +597,6 @@
     },
     {
       "parameters": {
-        "operation": "send",
-        "textBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text_Body', ``, 'string') }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.whatsAppTool",
-      "typeVersion": 1,
-      "position": [
-        2064,
-        -64
-      ],
-      "id": "e04ecdc0-3b51-43ac-a5b7-9d1163227cae",
-      "name": "Send message in WhatsApp Business Cloud",
-      "webhookId": "47774103-a163-4055-8eab-4c8c5f739b15",
-      "disabled": true
-    },
-    {
-      "parameters": {
         "model": "llama-3.3-70b-versatile",
         "options": {}
       },
@@ -682,29 +665,6 @@
           "name": "Postgres account"
         }
       }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
-        "text": "={{ $json.output }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1488,
-        -64
-      ],
-      "id": "7f98ae2b-6645-4557-8bcb-9325cf6522d6",
-      "name": "Send a text message",
-      "webhookId": "e75e2b30-295e-4b3e-a65a-ab5ca2a99243",
-      "credentials": {
-        "telegramApi": {
-          "id": "fzsd8isbOZi9xxxW",
-          "name": "Telegram Pirata"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -798,21 +758,6 @@
           "name": "Google Drive account"
         }
       }
-    },
-    {
-      "parameters": {
-        "amount": 10
-      },
-      "id": "b57f0016-6250-41ab-b802-967b525adb8f",
-      "name": "Get Text1",
-      "type": "n8n-nodes-base.wait",
-      "position": [
-        1136,
-        -48
-      ],
-      "webhookId": "99b49c83-d956-46d2-b8d3-d65622121ad9",
-      "typeVersion": 1.1,
-      "disabled": true
     },
     {
       "parameters": {
@@ -1134,11 +1079,6 @@
         ]
       ]
     },
-    "Send message in WhatsApp Business Cloud": {
-      "ai_tool": [
-        []
-      ]
-    },
     "Groq Chat Model": {
       "ai_languageModel": [
         []
@@ -1197,11 +1137,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Get Text1": {
-      "main": [
-        []
       ]
     }
   },
