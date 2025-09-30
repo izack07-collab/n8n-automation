@@ -1,0 +1,1225 @@
+{
+  "name": "Agente de FAQ+Vendas",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.audio.id }}"
+      },
+      "id": "43eb9c20-180d-4df2-a04c-7caf1cd79147",
+      "name": "Get Audio URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        -608,
+        32
+      ],
+      "typeVersion": 1,
+      "webhookId": "6388358f-f3ac-40d9-a272-af9587fd57cd",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.image.id }}"
+      },
+      "id": "5805d124-309c-4971-b45c-f808a974facd",
+      "name": "Get Image URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        -608,
+        272
+      ],
+      "typeVersion": 1,
+      "webhookId": "1013a4cf-b18b-4097-8716-708c9beffd5b",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "id": "4baf2019-e7b8-4885-a95b-dd461dc754e1",
+      "name": "Download Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -384,
+        32
+      ],
+      "typeVersion": 4.2,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "id": "d2db1a1e-cdcb-4f69-b9d3-71067e197ddb",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -448,
+        272
+      ],
+      "typeVersion": 4.2,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d990cbd6-a408-4ec4-a889-41be698918d9",
+              "name": "message_type",
+              "type": "string",
+              "value": "={{ $('Split out message').item.json.type }}"
+            },
+            {
+              "id": "23b785c3-f38e-4706-80b7-51f333bba3bd",
+              "name": "message_text",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "id": "6e83f9a7-cf75-4182-b2d2-3151e8af76b9",
+              "name": "from",
+              "type": "string",
+              "value": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}"
+            },
+            {
+              "id": "da4b602a-28ca-4b0d-a747-c3d3698c3731",
+              "name": "message_caption",
+              "type": "string",
+              "value": "={{ $('Identify and ReRoute Message Types').item.json.video && $('Identify and ReRoute Message Types').item.json.video.caption || '' }}\n{{ $('Identify and ReRoute Message Types').item.json.image && $('Identify and ReRoute Message Types').item.json.image.caption || ''}}\n{{ $('Identify and ReRoute Message Types').item.json.audio && $('Identify and ReRoute Message Types').item.json.audio.caption || ''}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4cec427d-d31b-4e09-a502-75f79acf5215",
+      "name": "Get User's Message",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        32,
+        272
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "c7f98863-19ef-49f7-a812-e8be9b86d87b",
+      "name": "Get Text",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        -608,
+        560
+      ],
+      "webhookId": "99b49c83-d956-46d2-b8d3-d65622121ad9",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "649ac554-b229-49dd-afc3-2a06e6c65ef5",
+      "name": "WhatsApp Trigger1",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "position": [
+        -1184,
+        256
+      ],
+      "webhookId": "0b1b3a9b-2f6a-4f5a-8385-6365d96f4802",
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-nano",
+        "options": {}
+      },
+      "id": "b7999ac9-1b32-45a0-984a-abf089204468",
+      "name": "OpenAI Chat Model5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -304,
+        432
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-nano",
+        "options": {}
+      },
+      "id": "d3fb02b6-0653-4384-bc54-4cd7292e9a48",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        752
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "contacts_data",
+        "description": "Retrieves information about contacts and associated email addresses, templates and more.",
+        "topK": 8
+      },
+      "id": "1e4432cb-61ad-4e08-83a8-e25de9bece95",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "47cda56d-9d84-4cd2-bd58-ea841ca47eca",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        1552,
+        896
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-nano",
+        "options": {}
+      },
+      "id": "d31df42e-9208-4231-8df6-9ad6e21e2997",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "15ef2401-02f8-4c12-97b0-026dd3de480e",
+      "name": "SerpAPI",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        560
+      ],
+      "credentials": {
+        "serpApi": {
+          "id": "rOV4WIv4AuOfoRDl",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "id": "8c71d112-32d5-47eb-b4ea-83fa1f9d76f8",
+      "name": "Split out message",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -992,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.type == 'audio' && Boolean($json.audio) }}",
+                    "rightValue": "audio"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Audio Message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "82aa5ff4-c9b6-4187-a27e-c7c5d9bfdda0",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.type == 'video' && Boolean($json.video) }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Video Message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "05b30af4-967b-4824-abdc-84a8292ac0e5",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.type == 'image' && Boolean($json.image) }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Image Message"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Text Message"
+        }
+      },
+      "id": "dd6044f0-78df-44c9-bb34-9d19cf6bf5fb",
+      "name": "Identify and ReRoute Message Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -832,
+        224
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Here is an image sent by the user. Describe the image and transcribe any text visible in the image. Put in as much detail as possible.",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary"
+            }
+          ]
+        }
+      },
+      "id": "879a4012-6866-41fa-b43b-71ef29afb8e0",
+      "name": "Image Explainer",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        -304,
+        272
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Summarize the user's message succinctly."
+            }
+          ]
+        }
+      },
+      "id": "7b8463ba-9c2d-41ab-ab29-d7223443f3b1",
+      "name": "Text Summarizer",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        -304,
+        560
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "8f95e3ff-5b1a-4a90-8289-510cb6e71f19",
+      "name": "Audio Transcriber",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -176,
+        32
+      ],
+      "typeVersion": 1.5,
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "3e99e206-17a4-4d6d-9037-456283efe263",
+      "name": "n8n_demo",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        736
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LSPPCuA65bx9fhsW",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1088,
+        1040
+      ],
+      "id": "092a08be-8648-4034-b59f-2af4312d3875",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        1280
+      ],
+      "id": "01e19b94-dc0d-4bc0-9d29-1875c279b23f",
+      "name": "Embedding model",
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "vector_store_key",
+          "mode": "list",
+          "cachedResultName": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        1008,
+        848
+      ],
+      "id": "16d309ae-c567-4425-9954-755590dfceca",
+      "name": "Insert documents"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Recebe informações sobre Artistas, Regras, Excursões, Comercial, Ingressos, Local, Ingressos, e tudo mais que for de informação que esteja na pasta Pirata Festival 2026",
+        "memoryKey": {
+          "__rl": true,
+          "value": "vector_store_key",
+          "mode": "list",
+          "cachedResultName": "vector_store_key"
+        },
+        "topK": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        1408,
+        1184
+      ],
+      "id": "9f4e164c-3384-4589-9ba7-ff8c2f02e638",
+      "name": "Retrieve documents"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1824,
+        736
+      ],
+      "id": "fbe55e08-d327-4b1a-b2bb-8ad26098818e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "E3sASzFe2t91saby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Você é Lua, a assistente oficial do Pirata Festival 🎭✨.\nSeu papel é responder de forma clara, objetiva e simpática, usando apenas a ferramenta designada para enviar mensagens ao cliente.\n\n🗣️ Apresentação\n\nAo receber a primeira mensagem do dia, apresente-se assim:\n\"Olá, eu sou a Lua, a assistente oficial do Pirata Festival 🎭✨. Como posso te ajudar hoje?\"\n\nSe o cliente já enviou uma dúvida direta, não repita a apresentação.\n\nApós a primeira mensagem, atenda normalmente, de forma humanizada e simpática.\n\nNão ofereça ajuda que não foi programada, nem detalhes técnicos sobre o funcionamento do sistema ou do n8n.\n\n📂 Consulta de documentos\n\nSempre que o cliente fizer uma pergunta, consulte somente os arquivos da pasta Pirata Festival 2026.\n\nArtistas → lineup, DJs, atrações: se não houver informação, direcione para o Instagram oficial: https://www.instagram.com/piratafestival\n_\n\nIngressos → preços, promoções, lotes, datas de virada, formas de pagamento\n\nRegras → itens permitidos/proibidos, políticas\n\nLocal / Período → endereço e transporte / data de início e fim\n\nEstacionamento → informações sobre estacionamento\n\nComercial → contato para fornecedores, patrocínios e parcerias\n\nExcursão → informações de excursões\n\n⚙️ Regras de comportamento\n\nResponda apenas o que foi perguntado.\n\nSó ofereça informações extras se o usuário pedir mais detalhes.\n\nNunca invente informações que não constem nos documentos.\n\nSe não encontrar resposta nos documentos, direcione para os links oficiais:\n\nCompra de ingressos: https://pistapirata.com.br/tickets\n\nInformações gerais: https://pistapirata.com.br/sobre\n\nContatos da organização: https://pistapirata.com.br/contato\n\nTroca de titularidade: https://pistapirata.com.br/meus-ingressos/pin\n\nInstagram oficial: https://www.instagram.com/piratafestival_\n_\n\nSe o usuário insistir em falar com um atendente humano: 55 73 99844-5773\n\nNunca cite ou invente outras seções do site, nem chute valores ou nomes.\n\nSe o cliente disser “ok” ou demonstrar que entendeu, não repita a informação.\n\nTodas as respostas devem ser enviadas pela ferramenta de mensagens designada, sem exceção."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        272
+      ],
+      "id": "36d02ed4-a34f-419f-928c-2885f26e36e0",
+      "name": "AI Agent",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        848,
+        848
+      ],
+      "id": "57921d0a-1690-46d0-87c1-00e62e24f90a",
+      "name": "Download file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ib1mamI5Z2eL4oeA",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "textBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text_Body', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTool",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        -64
+      ],
+      "id": "e04ecdc0-3b51-43ac-a5b7-9d1163227cae",
+      "name": "Send message in WhatsApp Business Cloud",
+      "webhookId": "47774103-a163-4055-8eab-4c8c5f739b15",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        560
+      ],
+      "id": "06bbb737-52ed-4703-bf3d-efcb351ac4b3",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "57zFNnBqMCnfeoKa",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh",
+            "mode": "list",
+            "cachedResultName": "Pirata Festival 2026",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        848
+      ],
+      "id": "6c8477fc-7cd1-4842-b9e4-c910b63eebbc",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ib1mamI5Z2eL4oeA",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=sessionKey = {{$json[\"message\"][\"chat\"][\"id\"]}}\n",
+        "tableName": "n8n_personalagent_chat_histories"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        560
+      ],
+      "id": "3c85d685-985e-49d1-8a45-1fcd1bdd7df3",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "TBM9EMOvqqBQoBcj",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1488,
+        -64
+      ],
+      "id": "7f98ae2b-6645-4557-8bcb-9325cf6522d6",
+      "name": "Send a text message",
+      "webhookId": "e75e2b30-295e-4b3e-a65a-ab5ca2a99243",
+      "credentials": {
+        "telegramApi": {
+          "id": "fzsd8isbOZi9xxxW",
+          "name": "Telegram Pirata"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        272
+      ],
+      "id": "790fe284-67da-456b-a776-062d78e438a5",
+      "name": "Telegram Trigger",
+      "webhookId": "058e01c8-f634-40be-baaf-29122f430fff",
+      "credentials": {
+        "telegramApi": {
+          "id": "r7nzQIDz3AUDy03B",
+          "name": "Telegram Pirata 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh",
+          "mode": "list",
+          "cachedResultName": "Pirata Festival 2026",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        432,
+        784
+      ],
+      "id": "f6bf5d2e-225a-4097-b576-279be772cadd",
+      "name": "Google Drive Trigger Create",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ib1mamI5Z2eL4oeA",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh",
+          "mode": "list",
+          "cachedResultName": "Pirata Festival 2026",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ynHuVJrtfyIRGRKM1K0zTJS9CwZaX6eh"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        432,
+        944
+      ],
+      "id": "2856e6c4-4e7a-471f-8c1a-52f8e7f32a05",
+      "name": "Google Drive Update",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ib1mamI5Z2eL4oeA",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "b57f0016-6250-41ab-b802-967b525adb8f",
+      "name": "Get Text1",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        1136,
+        -48
+      ],
+      "webhookId": "99b49c83-d956-46d2-b8d3-d65622121ad9",
+      "typeVersion": 1.1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8087219679:AAGdWMnskApavZTkZsnxFETRl5GwW2SfRZI/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{$json[\"output\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1664,
+        272
+      ],
+      "id": "56bb2a74-ca6e-4281-88eb-4d2f9f429d06",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Image URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Audio Transcriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Image Explainer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User's Message": {
+      "main": [
+        []
+      ]
+    },
+    "Get Text": {
+      "main": [
+        [
+          {
+            "node": "Text Summarizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Split out message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Image Explainer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Summarizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "n8n_demo",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Audio URL": {
+      "main": [
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split out message": {
+      "main": [
+        [
+          {
+            "node": "Identify and ReRoute Message Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify and ReRoute Message Types": {
+      "main": [
+        [
+          {
+            "node": "Get Audio URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Get Image URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Explainer": {
+      "main": [
+        [
+          {
+            "node": "Get User's Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Summarizer": {
+      "main": [
+        [
+          {
+            "node": "Get User's Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio Transcriber": {
+      "main": [
+        [
+          {
+            "node": "Get User's Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n_demo": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert documents",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embedding model": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert documents",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Retrieve documents",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve documents": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file1": {
+      "main": [
+        [
+          {
+            "node": "Insert documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message in WhatsApp Business Cloud": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger Create": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Update": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Text1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "45d40f7c-399d-4f3f-a519-d8545f365302",
+  "meta": {
+    "instanceId": "5ea17cdb817525a8ebbe13f3da3606db04887c2f5c6526f71cf1a45d36338f16"
+  },
+  "id": "14Dto6vqSXTRcCAY",
+  "tags": [
+    {
+      "createdAt": "2025-09-24T00:11:25.986Z",
+      "updatedAt": "2025-09-24T00:11:25.986Z",
+      "id": "3jBgDytP9rhj1NcB",
+      "name": "Agent"
+    }
+  ]
+}
